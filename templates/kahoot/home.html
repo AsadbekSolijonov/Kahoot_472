@@ -7,32 +7,31 @@
 
 <!-- HOME CONTENT -->
 {% block content %}
-    <!-- NAVBAR -->
-    {% include 'kahoot/navbar.html' %}
-
     <div class="p-3">
         <h6><b>Kahoots</b></h6>
 
         <!-- CARDS -->
-        <div class="up-down card text-white" style="width: 15rem;">
+        <a href="{% url 'detail-view' %}">
+            <div class="up-down card text-white" style="width: 15rem;">
 
-            <p class="bg-primary m-0 p-1 rounded-top bg-opacity-75 fs-14 d-flex align-middle justify-content-between">
-                <span><i class="bi bi-file-slides"></i> Kahoot</span>
-                <span class="badge border border-1 flex-end">Free</span>
-            </p>
+                <p class="bg-primary m-0 p-1 rounded-top bg-opacity-75 fs-14 d-flex align-middle justify-content-between">
+                    <span><i class="bi bi-file-slides"></i> Kahoot</span>
+                    <span class="badge border border-1 flex-end">Free</span>
+                </p>
 
-            <div class="position-relative">
-                <img src="https://www.inexpanse.com/wp-content/uploads/2018/01/collage-of-logos-1024x640.jpg"
-                     class="card-img-top" alt="...">
-                <span class="badge text-bg-dark bg-opacity-75 w-50 position-absolute bottom-0 end-0 m-1">15 quesitons</span>
+                <div class="position-relative">
+                    <img src="https://www.inexpanse.com/wp-content/uploads/2018/01/collage-of-logos-1024x640.jpg"
+                         class="card-img-top" alt="...">
+                    <span class="badge text-bg-dark bg-opacity-75 w-50 position-absolute bottom-0 end-0 m-1">15 quesitons</span>
+                </div>
+
+                <div class="card-body bg-primary rounded-bottom bg-opacity-75 p-2 fs-20">
+                    <p class="card-text">Some quick example</p>
+                    <p class="card-text fs-14">Alexeiil <i class="bi bi-patch-check-fill"></i></p>
+                </div>
+
             </div>
-
-            <div class="card-body bg-primary rounded-bottom bg-opacity-75 p-2 fs-20">
-                <p class="card-text">Some quick example</p>
-                <p class="card-text fs-14">Alexeiil <i class="bi bi-patch-check-fill"></i></p>
-            </div>
-
-        </div>
+        </a>
 
     </div>
 
