@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-3 shadow" style="min-height: 100vh!important;">
             <img class="img-fluid"
-                 src="https://www.inexpanse.com/wp-content/uploads/2018/01/collage-of-logos-1024x640.jpg"
+                 src="{{ category.logo.url }}"
                  alt="rasm">
             <div class="p-3">
                 <h4 class="fw-bold">Logo</h4>
@@ -23,17 +23,51 @@
         </div>
         <div class="col-9">
             <h6 class="my-2"><b>Question 10</b></h6>
-            <div class="card w-100" style="width: 18rem;">
-                <div class="card-body d-flex justify-content-between align-items-center p-0">
-                    <p class="w-75 px-3 m-0">
-                        <span>1-quiz</span>
-                        <br>
-                        <span class="fs-4">My Question</span>
-                    </p>
-                    <img src="https://i.pinimg.com/736x/3d/6a/2a/3d6a2ad56bc3403c5cfcc3efe09b741b.jpg"
-                         class="card-img-top w-25" alt="..." style=" max-width: 200px; max-height: 90px;">
-                </div>
+
+            <!-- ACCORDION -->
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                {% for quiz in category.questions.all %}
+
+                    <!-- ACCORDION HEAD -->
+                    <div class="card w-100 mb-3" style="width: 18rem;" data-bs-toggle="collapse"
+                         data-bs-target="#flush-collapse{{ quiz.id }}" aria-expanded="false"
+                         aria-controls="flush-collapseOne">
+                        <div class="card-body d-flex justify-content-between align-items-center p-0">
+                            <p class="w-75 px-3 m-0">
+                                <span>{{ forloop.counter }}-quiz</span>
+                                <br>
+                                <span class="fs-4">{{ quiz.question }}</span>
+                            </p>
+                            <div class="position-relative">
+                                <img src="{{ quiz.logo.url }}"
+                                     class="card-img-top w-100" alt="..." style=" max-width: 200px; max-height: 90px;">
+                                <span class="badge text-bg-secondary position-absolute bottom-0 end-0">{{ quiz.time }} sec</span>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- ACCORDION BODY -->
+                    <div id="flush-collapse{{ quiz.id }}" class="accordion-collapse collapse"
+                         data-bs-parent="#accordionFlushExample">
+                        {% for option in quiz.options.all %}
+                            <div class="accordion-body">
+                                <span>{{ option.answer }}</span>
+                                <span class="float-end">
+                                    {% if option.is_correct %}
+                                        <i class="bi bi-check-lg text-success"></i>
+                                    {% else %}
+                                        <i class="bi bi-x-lg text-danger"></i>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}
+
             </div>
+
         </div>
     </div>
 {% endblock %}
