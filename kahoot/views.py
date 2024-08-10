@@ -5,6 +5,9 @@ from kahoot.models import Question, Category
 
 def home_view(request):
     categories = Category.objects.all()
+    search = request.GET.get('search')
+    if search:
+        categories = categories.filter(title__icontains=search)
     context = {
         'categories': categories,
     }
