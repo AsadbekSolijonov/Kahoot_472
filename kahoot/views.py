@@ -10,6 +10,7 @@ def home_view(request):
         categories = categories.filter(title__icontains=search)
     context = {
         'categories': categories,
+        'search': search if search else '',
     }
     return render(request, 'kahoot/home.html', context)
 
