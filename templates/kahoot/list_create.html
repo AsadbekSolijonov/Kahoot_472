@@ -5,9 +5,16 @@
 {% endblock %}
 
 {% block content %}
+
+    <!-- MODALS -->
+    {% include 'kahoot/list_create_modal_category.html' %}
+    {% include 'kahoot/list_create_modal_question.html' %}
+    
+    <!-- CREATE -->
     <div class="d-flex justify-content-center align-items-center gap-3" style="height: 50vh;">
-        <!-- CARD -->
-        <div class="card" style="width: 18rem;">
+
+        <!-- CATEGORY CARD -->
+        <div class="card up-down" style="width: 18rem;" data-bs-toggle="modal" data-bs-target="#createCategoryModal">
             <div class="card-body">
                 <div class="d-flex">
                     <i class="bi bi-plus-square fs-3"></i>
@@ -20,8 +27,8 @@
             </div>
         </div>
 
-        <!-- Question -->
-        <div class="card" style="width: 18rem;">
+        <!-- QUESTION CARD -->
+        <div class="card up-down" style="width: 18rem;" data-bs-toggle="modal" data-bs-target="#createQuestionModal">
             <div class="card-body">
                 <div class="d-flex">
                     <i class="bi bi-plus-square fs-3"></i>
@@ -33,5 +40,7 @@
                 <p class="card-text">Yangi Savol qo'shish</p>
             </div>
         </div>
+
     </div>
+
 {% endblock %}
