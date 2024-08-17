@@ -2,7 +2,7 @@
 <nav class="navbar bg-body-tertiary sticky-top">
     <div class="container-fluid">
         <img style="width: 9%;" src="https://1000logos.net/wp-content/uploads/2022/02/Kahoot-Logo.png" alt="rasm">
-        <form class="d-flex w-50 input-group" role="search" method="GET" action="{% url 'home-view' %}">
+        <form class="d-flex w-50 input-group rounded" role="search" method="GET" action="{% url 'home-view' %}">
             {% csrf_token %}
             <label class="input-group-text" id="basic-addon1" for="search">
                 <i class="bi bi-search"></i>
@@ -11,6 +11,6 @@
                    id="search" name="search" value="{{ search }}">
             <button class="btn btn-outline-success" type="submit">Search</button>
         </form>
-        <a href="{% url 'list-create' %}"><button class="btn btn-primary">Create</button></a>
+        <a href="{% url 'list-create' %}"><button class="btn btn-primary shadow">Create</button></a>
     </div>
 </nav>

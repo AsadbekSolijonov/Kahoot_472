@@ -1,5 +1,5 @@
 from django import forms
-
+from django.forms.models import inlineformset_factory
 from kahoot.models import Category, Question, Option
 
 
@@ -34,5 +34,11 @@ class OptionForm(forms.ModelForm):
         widgets = {
             'question': forms.Select(attrs={'class': 'form-control'}),
             'answer': forms.TextInput(attrs={'class': 'form-control'}),
-            'is_correct': forms.CheckboxInput(attrs={'class': 'form-control'}),
+            'is_correct': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+
+OptionFormSet = inlineformset_factory(
+    Question, Option, form=OptionForm, extra=4, max_num=4, can_delete=True
+)
+

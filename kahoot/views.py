@@ -1,6 +1,6 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
-from kahoot.forms import CategoryForm, QuestionForm, OptionForm
+from kahoot.forms import CategoryForm, QuestionForm, OptionForm, OptionFormSet
 from kahoot.models import Question, Category
 
 
@@ -28,10 +28,52 @@ def list_create(request):
     category_form = CategoryForm()
     question_form = QuestionForm()
     option_form = OptionForm()
+    option_formset = OptionFormSet()
 
     context = {
         'category_form': category_form,
         'question_form': question_form,
         'option_form': option_form,
+        'option_formset': option_formset
     }
     return render(request, 'kahoot/list_create.html', context)
+
+
+def category_create(request):
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home-view')
+        else:
+            print(form.errors)
+    category_form = CategoryForm()
+    question_form = QuestionForm()
+    option_form = OptionForm()
+    option_formset = OptionFormSet()
+
+    context = {
+        'category_form': category_form,
+        'question_form': question_form,
+        'option_form': option_form,
+        'option_formset': option_formset
+    }
+    return render(request, 'kahoot/list_create.html', context)
+
+
+def create_question(request):
+    if request.method == 'POST':
+        question_form = QuestionForm(request.POST, request.FILES)
+        option_formset = OptionFormSet(request.POST, instance=question_form.instance)
+        if question_form.is_valid() and option_formset.is_valid():
+            question = question_form.save()
+            option_formset.save()
+            return redirect('home-view')  # Replace with your success URL
+    else:
+        question_form = QuestionForm()
+        option_formset = OptionFormSet()
+
+    return render(request, 'kahoot/list_create.html', {
+        'question_form': question_form,
+        'option_formset': option_formset,
+    })
