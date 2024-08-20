@@ -39,6 +39,5 @@ class OptionForm(forms.ModelForm):
 
 
 OptionFormSet = inlineformset_factory(
-    Question, Option, form=OptionForm, extra=4, max_num=4, can_delete=True
+    Question, Option, form=OptionForm, extra=1, max_num=4, can_delete=True
 )
-

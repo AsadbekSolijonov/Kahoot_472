@@ -15,11 +15,13 @@
                     {{ question_form.as_p }}
 
                     <!-- Option -->
-                    {{ option_formset.management_form }}
-                    {% for form in option_formset %}
-                        {{ form.as_p }}
-                    {% endfor %}
-
+                    <div id="option-forms">
+                        {% for form in option_formset %}
+                            <div class="option-form">
+                                {{ form.as_p }}
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

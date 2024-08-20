@@ -77,3 +77,7 @@ def create_question(request):
         'question_form': question_form,
         'option_formset': option_formset,
     })
+
+
+def game_themes(request):
+    return render(request, 'kahoot/game_theme.html')
