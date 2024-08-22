@@ -11,12 +11,12 @@
             <img class="img-fluid"
                  src="{{ category.logo.url }}"
                  alt="rasm">
-            <div class="p-3">
+            <div class="p-2">
                 <h4 class="fw-bold">Logo</h4>
                 <p>22.9k plays . 187.7k</p>
                 <a href="{% url 'game-themes' %}">
                     <button class="btn btn-primary shadow">
-                        <span class="spinner-grow spinner-grow-sm bg-danger" aria-hidden="true"></span>
+                        <span class="spinner-grow spinner-grow-sm" aria-hidden="true"></span>
                         Host Live
                     </button>
                 </a>
@@ -59,7 +59,6 @@
                         {% for option in quiz.options.all %}
                             <div class="accordion-body px-2 py-0">
                                 <!-- ANSWERS -->
-
                                 <span>
                                     {% if forloop.counter == 1 %}
                                         <img class="rounded" style="width: 25px;"

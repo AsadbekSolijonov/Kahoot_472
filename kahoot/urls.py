@@ -8,5 +8,6 @@ urlpatterns = [
     path('category-create/', views.category_create, name='category-create'),
     path('question-create/', views.create_question, name='question-create'),
     path('game-themes/', views.game_themes, name='game-themes'),
+    path('game-pin/', views.game_pin, name='game-pin'),
 
 ]

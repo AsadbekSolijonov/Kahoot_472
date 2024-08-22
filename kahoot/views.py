@@ -65,13 +65,17 @@ def create_question(request):
     if request.method == 'POST':
         question_form = QuestionForm(request.POST, request.FILES)
         option_formset = OptionFormSet(request.POST, instance=question_form.instance)
+
         if question_form.is_valid() and option_formset.is_valid():
-            question = question_form.save()
+            question_form.save()
             option_formset.save()
             return redirect('home-view')  # Replace with your success URL
-    else:
-        question_form = QuestionForm()
-        option_formset = OptionFormSet()
+        else:
+            print(f":) option forms: {option_formset.errors}")
+            print(f":) question forms: {question_form.errors}")
+
+    question_form = QuestionForm()
+    option_formset = OptionFormSet()
 
     return render(request, 'kahoot/list_create.html', {
         'question_form': question_form,
@@ -81,3 +85,12 @@ def create_question(request):
 
 def game_themes(request):
     return render(request, 'kahoot/game_theme.html')
+
+
+def game_pin(request):
+    import random
+    random_number = random.randint(100000, 1000000)
+    context = {
+        'random_number': random_number
+    }
+    return render(request, 'kahoot/game_pin.html', context)

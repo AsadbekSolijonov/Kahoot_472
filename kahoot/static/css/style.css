@@ -4,6 +4,8 @@
     box-sizing: border-box;
 }
 
+
+
 body {
     font-family: "Montserrat", sans-serif;
     font-optical-sizing: auto;
@@ -40,4 +42,12 @@ body {
     100% {
         transform: scale(1);
     }
+}
+
+.bg-kahoot {
+    height: 100vh;
+    background-image: url("https://lethaonhiblog.wordpress.com/wp-content/uploads/2016/11/bg.png?w=700");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
 }

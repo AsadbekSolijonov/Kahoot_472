@@ -1,0 +1,41 @@
+{% extends '_base_game.html' %}
+
+{% block title %}
+    Game Pin
+{% endblock %}
+
+{% block content %}
+    <div class="bg-kahoot">
+        <!-- GAME PIN -->
+        <div class="d-flex justify-content-center gap-2 pt-3">
+            <div class="card shadow d-flex justify-content-center align-items-center px-3 border border-0">
+
+                <span>Join at www.kahoot.it</span>
+                <span>or with the Kahoot! app</span>
+            </div>
+            <div class="card shadow d-flex justify-content-center align-items-center px-3 border border-0">
+                <span class="fs-4">GAME PIN:</span>
+                <span class="fs-1 fw-bold">{{ random_number | space:3 }}</span>
+            </div>
+            <div>
+                <img class="shadow" style="width: 100px;"
+                     src="https://loquiz.com/wpmainpage/wp-content/uploads/2022/08/green-steps-QR-game-templates.png"
+                     alt="">
+            </div>
+            <div>
+                <!-- KAHOOT LOGO AND START -->
+            </div>
+        </div>
+
+        <!-- KAHOOT PLAYERS -->
+        <div>
+
+        </div>
+
+        <!-- GAME SETTINGS -->
+        <div>
+
+        </div>
+    </div>
+
+{% endblock %}

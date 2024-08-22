@@ -1,4 +1,4 @@
-{% extends '_base.html' %}
+{% extends '_base_game.html' %}
 {% load static %}
 
 <!-- TITLE -->
@@ -13,7 +13,7 @@
     <div class="d-flex justify-content-center align-items-center mt-5">
 
         <!-- GAME PIN GA O"TISH -->
-        <a href="">
+        <a href="{% url 'game-pin' %}">
             <div class="text-center p-3 shadow rounded up-down">
                 <img src="{% static 'img/game_theme/classic_mode.jpeg' %}" alt="rasm">
                 <p class="mt-2">Classic Mode</p>
