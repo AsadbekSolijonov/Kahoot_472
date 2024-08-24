@@ -91,6 +91,6 @@ def game_pin(request):
     import random
     random_number = random.randint(100000, 1000000)
     context = {
-        'random_number': random_number
+        'random_number': str(random_number)[:3] + " " + str(random_number)[3:]
     }
     return render(request, 'kahoot/game_pin.html', context)
