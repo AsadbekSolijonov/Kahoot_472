@@ -9,5 +9,6 @@ urlpatterns = [
     path('question-create/', views.create_question, name='question-create'),
     path('game-themes/', views.game_themes, name='game-themes'),
     path('game-pin/', views.game_pin, name='game-pin'),
+    path('quizs/', views.quizs, name='quizs'),
 
 ]
