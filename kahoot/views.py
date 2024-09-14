@@ -98,3 +98,7 @@ def game_pin(request):
 
 def quizs(request):
     return render(request, 'kahoot/quizs.html')
+
+
+def join_game(request):
+    return render(request, 'kahoot/join_game.html')

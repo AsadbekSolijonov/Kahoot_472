@@ -1,0 +1,44 @@
+{% extends '_base_game.html' %}
+{% block title %}
+	Join Game
+{% endblock %}
+
+{% block content %}
+    <h2>Kahoot o'yiniga qo'shiling</h2>
+    <label for="game_pin">Game PIN:</label>
+    <input type="text" id="game_pin" required>
+    <br>
+    <label for="username">Username:</label>
+    <input type="text" id="username" required>
+    <br>
+    <button onclick="joinGame()">Qo'shilish</button>
+
+    <div id="messages"></div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        function joinGame() {
+            const gamePin = document.getElementById('game_pin').value;
+            const username = document.getElementById('username').value;
+
+            const socket = new WebSocket(`ws://${window.location.host}/ws/kahoot/${gamePin}/`);
+
+            socket.onopen = function() {
+                socket.send(JSON.stringify({
+                    'username': username
+                }));
+            };
+
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                const messageDiv = document.getElementById('messages');
+                messageDiv.innerHTML += `<p>${data.message}</p>`;
+            };
+
+            socket.onclose = function() {
+                console.log('WebSocket closed');
+            };
+        }
+    </script>
+{% endblock %}
