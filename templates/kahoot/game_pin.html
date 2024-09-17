@@ -15,7 +15,7 @@
             </div>
             <div class="card shadow d-flex justify-content-center align-items-center px-3 border border-0">
                 <span class="fs-4">GAME PIN:</span>
-                <span class="fs-1 fw-bold">{{ random_number }}</span>
+                <span class="fs-1 fw-bold">{{ game.pin_code }}</span>
             </div>
             <div>
                 <img class="shadow" style="width: 100px;"
@@ -37,13 +37,22 @@
                     <i class="bi bi-shield-lock fw-bold"></i>
                 </div>
                 <!-- KAHOOT LOGO AND START -->
-                <a class="btn btn-light shadow fw-bold px-3" href="{% url 'quizs' %}"> Start</a>
+                <button id="startGame" class="btn btn-light shadow fw-bold px-3">Start Game</button>
             </div>
         </div>
         <!-- KAHOOT PLAYERS -->
         <div class="d-flex justify-content-center mt-5">
             <div class="px-5 py-3 bg-pink fw-bold fs-2 text-light rounded">
-                Waiting for players...
+                <ul id="playersList">
+                    {% for player in players %}
+                        <li id="player-{{ player.id }}">
+                            {{ player.nickname }}
+                            <button class="removePlayer" data-player-id="{{ player.id }}">Remove</button>
+                        </li>
+                    {% empty %}
+                        <li>No players yet</li>
+                    {% endfor %}
+                </ul>
             </div>
         </div>
 
@@ -69,5 +78,67 @@
             </div>
         </div>
     </div>
+
+    <script>
+        const pinCode = "{{ game.pin_code }}";
+        const playersList = document.getElementById('playersList');
+
+        // WebSocket connection for the game
+        const gameSocket = new WebSocket(
+            'ws://' + window.location.host + '/ws/game/' + pinCode + '/'
+        );
+
+        // Handle WebSocket messages
+        gameSocket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            const action = data.action;
+
+            if (action === 'join') {
+                const nickname = data.nickname;
+                const newPlayer = document.createElement('li');
+                newPlayer.id = 'player-' + data.player_id;
+                newPlayer.innerHTML = `${nickname} <button class="removePlayer" data-player-id="${data.player_id}">Remove</button>`;
+                playersList.appendChild(newPlayer);
+            } else if (action === 'remove') {
+                const playerId = data.player_id;
+                const playerElement = document.getElementById('player-' + playerId);
+                if (playerElement) {
+                    playerElement.remove();
+                }
+            } else if (action === 'start_game') {
+                window.location.href = '/game/' + pinCode + '/started/';
+            }
+        };
+
+        // Join game via WebSocket
+        document.getElementById('joinForm').onsubmit = function(e) {
+            e.preventDefault();
+            const nickname = document.getElementById('nickname').value;
+
+            gameSocket.send(JSON.stringify({
+                'action': 'join',
+                'nickname': nickname,
+            }));
+        };
+
+        // Remove player via WebSocket
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('removePlayer')) {
+                const playerId = e.target.getAttribute('data-player-id');
+                gameSocket.send(JSON.stringify({
+                    'action': 'remove',
+                    'player_id': playerId,
+                }));
+            }
+        });
+
+        // Start game via WebSocket
+        document.getElementById('startGame').onclick = function() {
+            gameSocket.send(JSON.stringify({
+                'action': 'start_game'
+            }));
+        };
+    </script>
+
 
 {% endblock %}

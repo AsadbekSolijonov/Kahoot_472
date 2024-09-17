@@ -1,7 +1,7 @@
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
-
 from kahoot.forms import CategoryForm, QuestionForm, OptionForm, OptionFormSet
-from kahoot.models import Question, Category
+from kahoot.models import Question, Category, Game
 
 
 def home_view(request):
@@ -96,9 +96,50 @@ def game_pin(request):
     return render(request, 'kahoot/game_pin.html', context)
 
 
-def quizs(request):
-    return render(request, 'kahoot/quizs.html')
+def quiz_page(request, game_id):
+    # O'yin obyektini olish
+    game = get_object_or_404(Game, pk=game_id)
+    return render(request, 'kahoot/quizs.html', {'game': game})
+
+
+def start_quiz(request, game_id):
+    # O'yin obyektini olish
+    game = get_object_or_404(Game, pk=game_id)
+
+    # O'yin boshlanmagan bo'lsa, uni boshlash
+    if not game.started:
+        game.started = True
+        game.save()
+
+    # Quizlarni olish (bu yerda `Category` modeliga asoslangan)
+    questions = Question.objects.filter(category__in=Category.objects.filter(questions__game=game)).order_by('id')
+
+    # Foydalanuvchini quiz sahifasiga yo'naltirish
+    return render(request, 'kahoot/quizs.html', {'game': game, 'questions': questions})
 
 
 def join_game(request):
     return render(request, 'kahoot/join_game.html')
+
+
+# View for creating a game
+def create_game(request):
+    if request.method == 'POST':
+        game = Game.objects.create(is_active=True)
+        return redirect('waiting_room', pin_code=game.pin_code)
+    return render(request, 'create_game.html')
+
+
+# Waiting room view (no changes in the backend for WebSockets)
+def waiting_room(request, pin_code):
+    game = get_object_or_404(Game, pin_code=pin_code, is_active=True)
+    players = game.players.all()
+    return render(request, 'waiting_room.html', {'game': game, 'players': players})
+
+
+# View to start the game (via WebSocket for real-time)
+def start_game(request, pin_code):
+    game = get_object_or_404(Game, pin_code=pin_code, is_active=True)
+    if game:
+        return redirect('game_started')  # Redirect to the game started page
+    return JsonResponse({"error": "Game could not be started"}, status=400)

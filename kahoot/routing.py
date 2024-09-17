@@ -1,6 +1,7 @@
-from django.urls import path
+# routing.py
+from django.urls import re_path
 from . import consumers
 
 websocket_urlpatterns = [
-    path('ws/kahoot/<str:game_pin>/', consumers.KahootConsumer.as_asgi()),
+    re_path(r'ws/game/(?P<pin_code>\w+)/$', consumers.GameConsumer.as_asgi()),
 ]

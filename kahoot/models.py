@@ -1,27 +1,32 @@
 from django.db import models
+import random
+import string
 
 
 # 1. O'yin modeli
 class Game(models.Model):
-    pin = models.CharField(max_length=6, unique=True)  # Game PIN
-    title = models.CharField(max_length=255, default="Kahoot O'yini")  # O'yin nomi
-    started_at = models.DateTimeField(null=True, blank=True)  # O'yin boshlanish vaqti
-    ended_at = models.DateTimeField(null=True, blank=True)  # O'yin tugash vaqti
-    is_active = models.BooleanField(default=True)  # O'yin faollik holati
+    pin_code = models.CharField(max_length=10, unique=True)
+    is_active = models.BooleanField(default=False)
+    started = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.title} - PIN: {self.pin}"
+        return self.pin_code
+
+    def save(self, *args, **kwargs):
+        if not self.pin_code:
+            self.pin_code = ''.join(random.choices(string.digits, k=6))  # Generates a 6-digit game PIN
+        super().save(*args, **kwargs)
 
 
 # 2. O'yinchi modeli
 class Player(models.Model):
-    username = models.CharField(max_length=50)  # O'yinchining ismi
-    game = models.ForeignKey(Game, on_delete=models.CASCADE, related_name="players")  # O'yin bilan bog'lanish
-    score = models.IntegerField(default=0)  # O'yinchi ballari
+    nickname = models.CharField(max_length=50)
+    game = models.ForeignKey(Game, related_name='players', on_delete=models.CASCADE)
+    score = models.IntegerField(default=0)
     joined_at = models.DateTimeField(auto_now=True)  # O'yinga qo'shilgan vaqt
 
     def __str__(self):
-        return f"{self.username} (Score: {self.score})"
+        return f"{self.nickname} (Score: {self.score})"
 
 
 class Category(models.Model):
