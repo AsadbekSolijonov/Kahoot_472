@@ -1,15 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Game</title>
-</head>
-<body>
-    <h1>Create a new Kahoot Game</h1>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit">Generate Game PIN</button>
-    </form>
-</body>
-</html>
+{% extends '_base_game.html' %}
+{% load static %}
+
+<!-- TITLE -->
+{% block title %}
+    Game Theme
+{% endblock %}
+
+<!-- CONTENT -->
+{% block content %}
+    <div class="d-flex justify-content-center align-items-center mt-5">
+        <form method="post">
+            {% csrf_token %}
+            <div class="text-center d-flex flex-column p-3 shadow rounded up-down">
+                <img src="{% static 'img/game_theme/classic_mode.jpeg' %}" alt="rasm">
+
+                <button type="submit" class="border-0 mt-2 btn btn-light">Generate Game PIN</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}
