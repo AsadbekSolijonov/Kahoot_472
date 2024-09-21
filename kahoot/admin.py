@@ -22,4 +22,4 @@ class GameAdmin(admin.ModelAdmin):
 
 @admin.register(Player)
 class PlayerAdmin(admin.ModelAdmin):
-    list_display = ['nickname', 'game', 'score', 'joined_at']
+    list_display = ['id', 'nickname', 'game', 'score', 'joined_at']

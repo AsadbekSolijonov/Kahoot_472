@@ -5,142 +5,64 @@
 {% endblock %}
 
 {% block content %}
-    <div class="bg-kahoot position-relative">
-        <!-- GAME PIN -->
-        <div class="d-flex justify-content-center gap-2 pt-3">
-            <div class="card shadow d-flex justify-content-center align-items-center px-3 border border-0">
 
-                <span>Join at www.kahoot.it</span>
-                <span>or with the Kahoot! app</span>
-            </div>
-            <div class="card shadow d-flex justify-content-center align-items-center px-3 border border-0">
-                <span class="fs-4">GAME PIN:</span>
-                <span class="fs-1 fw-bold">{{ game.pin_code }}</span>
-            </div>
-            <div>
-                <img class="shadow" style="width: 100px;"
-                     src="https://loquiz.com/wpmainpage/wp-content/uploads/2022/08/green-steps-QR-game-templates.png"
-                     alt="">
-            </div>
-        </div>
+    <h1>Waiting Room - PIN: {{ game.pin_code }}</h1>
+    <h2>Players:</h2>
+    <ul>
+        {% for player in players %}
+            <li>{{ player.nickname }}
+                <button onclick="removePlayer({{ player.id }})">Remove</button>
+            </li>
+        {% endfor %}
+    </ul>
 
+    <h2>Join Game</h2>
+    <form method="POST" id="joinForm">
+        {% csrf_token %}
+        <input type="text" name="nickname" placeholder="Enter your nickname">
+        <button type="submit" name="action" value="join">Join</button>
+    </form>
 
-        <div class="d-flex justify-content-between mt-5 gap-2 px-5">
-
-            <form id="joinForm" class="d-flex gap-3 justify-content-center align-items-center w-75">
-                <input class="form-control w-50" type="text" id="nickname" name="nickname" placeholder="Enter your nickname"
-                required>
-                <button type="submit" class="btn btn-light" style="width: 200px;">Join Game</button>
-                <label class="text-center fs-3 fw-bold text-light">Kahoot!</label>
-            </form>
-
-            <div class="d-flex gap-2">
-                <div class="d-flex justify-content-center align-items-center bg-light p-2 rounded shadow"
-                     style="width: 45px;">
-                    <i class="bi bi-shield-lock fw-bold"></i>
-                </div>
-                <!-- KAHOOT LOGO AND START -->
-                <button id="startGame" class="btn btn-light shadow fw-bold px-3">Start Game</button>
-            </div>
-        </div>
-        <!-- KAHOOT PLAYERS -->
-        <div class="d-flex justify-content-center mt-5">
-            <div class="px-5 py-3 bg-pink fw-bold fs-2 text-light rounded">
-                <ul id="playersList">
-                    {% for player in players %}
-                        <li id="player-{{ player.id }}">
-                            {{ player.nickname }}
-                            <button class="removePlayer" data-player-id="{{ player.id }}">Remove</button>
-                        </li>
-                    {% empty %}
-                        <li>No players yet</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-
-        <!-- GAME SETTINGS -->
-        <div class="d-flex justify-content-between text-light position-absolute bottom-0 start-0 w-100 mb-3 px-3">
-            <div class="fw-bold fs-3">
-                Kahoot!
-            </div>
-
-            <div class="d-flex gap-2 align-items-center">
-                <!-- COUNT PLAYERS -->
-                <div class="bg-dark p-2 rounded shadow" style="width: 90px; opacity: 0.75;">
-                    <i class="bi bi-person-fill fs-4"></i>
-                    <span class="fs-4 fw-bold">0</span>
-                </div>
-
-                <!-- SETTINGS -->
-                <div class="d-flex bg-dark text-light gap-3 fs-4 py-2 px-3 rounded shadow" style="opacity: 0.75">
-                    <i class="bi bi-volume-down-fill"></i>
-                    <i class="bi bi-gear"></i>
-                    <i class="bi bi-fullscreen"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    <button onclick="startGame()">Start Game</button>
 
     <script>
-        const pinCode = "{{ game.pin_code }}";
-        const playersList = document.getElementById('playersList');
+        function removePlayer(playerId) {
+            fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body: JSON.stringify({action: 'remove', player_id: playerId})
+            }).then(response => response.json()).then(data => {
+                alert(data.message || 'Player removed');
+                location.reload();
+            });
+        }
 
-        // WebSocket connection for the game
-        const gameSocket = new WebSocket(
-            'ws://' + window.location.host + '/ws/game/' + pinCode + '/'
-        );
-
-        // Handle WebSocket messages
-        gameSocket.onmessage = function (e) {
-            const data = JSON.parse(e.data);
-            const action = data.action;
-
-            if (action === 'join') {
-                const nickname = data.nickname;
-                const newPlayer = document.createElement('li');
-                newPlayer.id = 'player-' + data.player_id;
-                newPlayer.innerHTML = `${nickname} <button class="removePlayer" data-player-id="${data.player_id}">Remove</button>`;
-                playersList.appendChild(newPlayer);
-            } else if (action === 'remove') {
-                const playerId = data.player_id;
-                const playerElement = document.getElementById('player-' + playerId);
-                if (playerElement) {
-                    playerElement.remove();
+        // Start Game
+        function startGame() {
+            fetch(`/start/{{ game.pin_code }}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
                 }
-            } else if (action === 'start_game') {
-                window.location.href = '/game/' + pinCode + '/started/';
-            }
-        };
+            }).then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url; // Redirect to the game started page
+                } else {
+                    return response.json();
+                }
+            }).then(data => {
+                if (data && data.error) {
+                    alert(data.error);
+                }
+            });
+        }
 
-        // Join game via WebSocket
-        document.getElementById('joinForm').onsubmit = function (e) {
-            e.preventDefault();
-            const nickname = document.getElementById('nickname').value;
-
-            gameSocket.send(JSON.stringify({
-                'action': 'join',
-                'nickname': nickname,
-            }));
-        };
-
-        // Remove player via WebSocket
-        document.addEventListener('click', function (e) {
-            if (e.target.classList.contains('removePlayer')) {
-                const playerId = e.target.getAttribute('data-player-id');
-                gameSocket.send(JSON.stringify({
-                    'action': 'remove',
-                    'player_id': playerId,
-                }));
-            }
-        });
-
-        // Start game via WebSocket
-        document.getElementById('startGame').onclick = function () {
-            gameSocket.send(JSON.stringify({
-                'action': 'start_game'
-            }));
-        };
     </script>
+
+
+
 
 {% endblock %}

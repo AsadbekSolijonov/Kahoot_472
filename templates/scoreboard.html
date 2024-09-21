@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scoreboard</title>
+</head>
+<body>
+    <h1>Final Scoreboard</h1>
+    <ul>
+        {% for player in players %}
+            <li>{{ player.nickname }}: {{ player.score }} points</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'create_game' %}">Create a New Game</a>
+</body>
+</html>

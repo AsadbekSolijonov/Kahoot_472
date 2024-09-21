@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Started</title>
+</head>
+<body>
+    <h1>Game is On!</h1>
+    <h2>Question: {{ question.question }}</h2>
+    <form method="POST" id="answerForm">
+        {% csrf_token %}
+        {% for option in options %}
+            <input type="radio" name="option_id" value="{{ option.id }}"> {{ option.answer }}<br>
+        {% endfor %}
+        <button type="submit">Submit Answer</button>
+    </form>
+
+    <script>
+        document.getElementById('answerForm').onsubmit = function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch(`/submit_answer/{{ question.id }}/{{ player.id }}/`, {
+                method: 'POST',
+                body: formData
+            }).then(response => response.json()).then(data => {
+                alert(data.status === "correct" ? "Correct!" : "Incorrect!");
+                // Optionally refresh to show the next question
+                location.reload(); // or handle next question without refresh
+            });
+        };
+    </script>
+</body>
+</html>
