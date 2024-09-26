@@ -126,13 +126,6 @@ def waiting_room(request, pin_code):
         player_id = request.POST.get('player_id')
         player = Player.objects.filter(id=player_id, game=game).first()
 
-        data = json.loads(request.body)
-        categoryId = data.get('categoryId')
-        print(categoryId)
-
-        category = Category.objects.get(id=3)
-        category.game = game
-        category.save()
         if player:
             player.delete()
             return JsonResponse({"status": "success"})
@@ -167,6 +160,19 @@ def game_started(request, pin_code):
 
     # Fetch the first question for the game
     questions = Question.objects.filter(category__game=game)
+
+    # try:
+    #     data = json.loads(request.body)
+    # except json.JSONDecodeError as e:
+    #     print(f"JSON decode error: {e}")
+    #     raise
+    #
+    # categoryId = data.get('categoryId')
+    # print(categoryId)
+    #
+    # category = Category.objects.get(id=categoryId)
+    # category.game = game
+    # category.save()
 
     if not questions.exists():
         return JsonResponse({"error": "No questions available for this game."}, status=400)

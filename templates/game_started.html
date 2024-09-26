@@ -17,7 +17,11 @@
     <script>
         document.getElementById('answerForm').onsubmit = function(e) {
             e.preventDefault();
+
             const formData = new FormData(this);
+            const categoryId = localStorage.getItem('categoryId');
+            console.log("POST Data: Category = ", categoryId)
+
             fetch(`/submit_answer/{{ question.id }}/{{ player.id }}/`, {
                 method: 'POST',
                 body: formData
