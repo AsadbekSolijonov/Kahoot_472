@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from kahoot.forms import CategoryForm, QuestionForm, OptionForm, OptionFormSet
@@ -123,6 +125,14 @@ def waiting_room(request, pin_code):
     elif request.method == 'POST' and request.POST.get('action') == 'remove':
         player_id = request.POST.get('player_id')
         player = Player.objects.filter(id=player_id, game=game).first()
+
+        data = json.loads(request.body)
+        categoryId = data.get('categoryId')
+        print(categoryId)
+
+        category = Category.objects.get(id=3)
+        category.game = game
+        category.save()
         if player:
             player.delete()
             return JsonResponse({"status": "success"})

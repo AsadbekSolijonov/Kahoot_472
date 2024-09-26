@@ -1,7 +1,12 @@
 from django.contrib import admin
 from kahoot.models import Category, Question, Option, Game, Player
 
-admin.site.register([Category, Option])
+admin.site.register(Option)
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'title']
 
 
 class OptionAdmin(admin.TabularInline):

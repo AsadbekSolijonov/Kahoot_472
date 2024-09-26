@@ -40,16 +40,25 @@
             });
         }
 
+
+
         // Start Game
         function startGame() {
+            let categoryId = localStorage.getItem('categoryId');
+            console.log('Category ID:', categoryId);
+
             fetch(`/start/{{ game.pin_code }}/`, {
                 method: 'POST',
                 headers: {
                     'X-CSRFToken': '{{ csrf_token }}',
+                },
+                body:{
+                    categoryId: categoryId,
                 }
             }).then(response => {
                 if (response.redirected) {
                     window.location.href = response.url; // Redirect to the game started page
+
                 } else {
                     return response.json();
                 }
