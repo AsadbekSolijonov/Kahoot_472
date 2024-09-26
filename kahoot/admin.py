@@ -1,23 +1,27 @@
 from django.contrib import admin
+from nested_admin.nested import NestedTabularInline, NestedStackedInline, NestedModelAdmin
+
 from kahoot.models import Category, Question, Option, Game, Player
 
-admin.site.register(Option)
 
-
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['id', 'title']
-
-
-class OptionAdmin(admin.TabularInline):
+class OptionAdmin(NestedTabularInline):
     model = Option
-    extra = 1
+    fields = ('answer', 'is_correct')
+    extra = 0
     max_num = 4
 
 
-@admin.register(Question)
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(NestedStackedInline):
+    model = Question
+    extra = 0
+    fields = ('logo', 'question', 'time')
     inlines = [OptionAdmin]
+
+
+@admin.register(Category)
+class CategoryAdmin(NestedModelAdmin):
+    inlines = [QuestionAdmin]
+    list_display = ['id', 'title']
 
 
 @admin.register(Game)

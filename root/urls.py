@@ -6,7 +6,8 @@ from root import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('kahoot.urls'))
+    path('', include('kahoot.urls')),
+    path('_nested_admin/', include('nested_admin.urls')),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

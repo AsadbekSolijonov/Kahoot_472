@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'kahoot',
     'channels',
+    'nested_admin',
 ]
 
 ASGI_APPLICATION = "root.asgi.application"
